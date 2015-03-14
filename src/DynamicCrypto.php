@@ -1,15 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: manuel
- * Date: 13/03/15
- * Time: 23:09
- */
 
 namespace DynamicCrypto;
 
+class DynamicCrypto
+{
 
-class DynamicCrypto {
+    /**
+     * @var Key
+     */
+    protected $key;
+
+    /**
+     * @var IV
+     */
+    protected $IV;
 
     protected $passphrase;
 
@@ -17,45 +21,51 @@ class DynamicCrypto {
 
     public function __construct($passphrase)
     {
-        $this->passphrase = $passphrase;
+        $this->passphrase = new PassPhrase($passphrase);
+        $this->key = new Key($this->passphrase);
+        $this->IV = new IV($this->passphrase);
     }
 
     public function encrypt($text)
     {
-        $superkey =  base64_encode(hash('sha512',$this->passphrase));
-        $superkey_len = strlen($superkey);
-        $idx_key = rand(0,($superkey_len-24));
-        $idx_iv = rand(0,($superkey_len-8));
-        $key = substr($superkey,$idx_key,24);
-        $iv = substr($superkey,$idx_iv,8);
-        $idx_hex_key = str_pad(dechex($idx_key),2,'0',STR_PAD_LEFT);
-        $idx_hex_iv = str_pad(dechex($idx_iv),2,'0',STR_PAD_LEFT);
+        $key = $this->key->getSubString();
+        $iv = $this->IV->getSubString();
 
         $text_num =str_split($text,$this->bit_check);
-        $text_num = $this->bit_check-strlen($text_num[count($text_num)-1]);
-        for ($i=0;$i<$text_num; $i++) {$text = $text . '_';}
-        $cipher = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
-        mcrypt_generic_init($cipher, $key, $iv);
-        $decrypted = mcrypt_generic($cipher,$text);
-        mcrypt_generic_deinit($cipher);
-        return rtrim(base64_encode($decrypted),'=').$idx_hex_key.$idx_hex_iv;
+        $text_num = $this->bit_check - strlen($text_num[count($text_num)-1]);
+        for ($i=0;$i<$text_num; $i++) {
+            $text = $text . '_';
+        }
+        $encryptionDescriptor = $this->getEncryptionDescriptor();
+        mcrypt_generic_init($encryptionDescriptor, $key, $iv);
+        $decrypted = mcrypt_generic($encryptionDescriptor,$text);
+        mcrypt_generic_deinit($encryptionDescriptor);
+
+        return rtrim(base64_encode($decrypted),'=')
+            .$this->key->getRandomHexadecimalPosition()
+            .$this->IV->getRandomHexadecimalPosition();
+    }
+
+    public function getEncryptionDescriptor()
+    {
+        return mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
     }
 
     public function decrypt($encrypted_text)
     {
-        $superkey =  base64_encode(hash('sha512',$this->passphrase));
+
         $idx_hex_iv = substr($encrypted_text,-2);
         $idx_hex_key = substr($encrypted_text,-4,2);
         $idx_iv = hexdec($idx_hex_iv);
         $idx_key = hexdec($idx_hex_key);
-        $iv = substr($superkey,$idx_iv,8);
-        $key =  substr($superkey,$idx_key,24);
+        $iv = substr($this->passphrase->getSuperKey(),$idx_iv,8);
+        $key =  substr($this->passphrase->getSuperKey(),$idx_key,24);
         $encrypted_text = substr($encrypted_text,0,-4);
 
-        $cipher = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
-        mcrypt_generic_init($cipher, $key, $iv);
-        $decrypted = mdecrypt_generic($cipher,base64_decode($encrypted_text));
-        mcrypt_generic_deinit($cipher);
+        $encryptionDescriptor = $this->getEncryptionDescriptor();
+        mcrypt_generic_init($encryptionDescriptor, $key, $iv);
+        $decrypted = mdecrypt_generic($encryptionDescriptor,base64_decode($encrypted_text));
+        mcrypt_generic_deinit($encryptionDescriptor);
         /*$last_char=substr($decrypted,-1);
         for($i=0;$i<$bit_check-1; $i++){
             if(chr($i)==$last_char){
