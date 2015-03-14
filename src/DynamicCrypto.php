@@ -31,17 +31,17 @@ class DynamicCrypto
         $key = $this->key->getSubString();
         $iv = $this->IV->getSubString();
 
-        $text_num =str_split($text,$this->bit_check);
+        $text_num =str_split($text, $this->bit_check);
         $text_num = $this->bit_check - strlen($text_num[count($text_num)-1]);
-        for ($i=0;$i<$text_num; $i++) {
+        for ($i = 0; $i < $text_num; $i++) {
             $text = $text . '_';
         }
         $encryptionDescriptor = $this->getEncryptionDescriptor();
         mcrypt_generic_init($encryptionDescriptor, $key, $iv);
-        $decrypted = mcrypt_generic($encryptionDescriptor,$text);
+        $decrypted = mcrypt_generic($encryptionDescriptor, $text);
         mcrypt_generic_deinit($encryptionDescriptor);
 
-        return rtrim(base64_encode($decrypted),'=')
+        return rtrim(base64_encode($decrypted), '=')
             .$this->key->getRandomHexadecimalPosition()
             .$this->IV->getRandomHexadecimalPosition();
     }
