@@ -19,11 +19,6 @@ abstract class Parameter
     /**
      * @var int
      */
-    protected $maxRandomValue;
-
-    /**
-     * @var int
-     */
     protected $parameterLength = 0;
 
     /**
@@ -32,7 +27,6 @@ abstract class Parameter
     public function __construct(PassPhrase $passPhrase)
     {
         $this->passPhrase = $passPhrase;
-        $this->maxRandomValue = $this->passPhrase->getSuperKeyLen() - $this->parameterLength;
     }
 
     /**
@@ -41,7 +35,7 @@ abstract class Parameter
     public function getRandomDecimalPosition()
     {
         if (is_null($this->randomPosition)) {
-            $this->randomPosition = rand(0, $this->maxRandomValue);
+            $this->randomPosition = rand(0, ($this->passPhrase->getSuperKeyLen() - $this->parameterLength));
         }
         return $this->randomPosition;
     }

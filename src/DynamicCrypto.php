@@ -17,6 +17,9 @@ class DynamicCrypto
 
     protected $passphrase;
 
+    /**
+     * @var int
+     */
     protected $bit_check = 8;
 
     public function __construct($passphrase)
@@ -28,20 +31,13 @@ class DynamicCrypto
 
     public function encrypt($text)
     {
-        $key = $this->key->getSubString();
-        $iv = $this->IV->getSubString();
-
-        $text_num =str_split($text, $this->bit_check);
-        $text_num = $this->bit_check - strlen($text_num[count($text_num)-1]);
-        for ($i = 0; $i < $text_num; $i++) {
-            $text = $text . '_';
-        }
         $encryptionDescriptor = $this->getEncryptionDescriptor();
-        mcrypt_generic_init($encryptionDescriptor, $key, $iv);
-        $decrypted = mcrypt_generic($encryptionDescriptor, $text);
+        mcrypt_generic_init($encryptionDescriptor, $this->key->getSubString(), $this->IV->getSubString());
+        $encrypted = mcrypt_generic($encryptionDescriptor, $this->prepareString($text));
         mcrypt_generic_deinit($encryptionDescriptor);
+        mcrypt_module_close($encryptionDescriptor);
 
-        return rtrim(base64_encode($decrypted), '=')
+        return rtrim(base64_encode($encrypted), '=')
             .$this->key->getRandomHexadecimalPosition()
             .$this->IV->getRandomHexadecimalPosition();
     }
@@ -51,9 +47,23 @@ class DynamicCrypto
         return mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
     }
 
+    public function prepareString($string)
+    {
+        $text_num = str_split($string, $this->bit_check);
+        $text_num = $this->bit_check - strlen($text_num[count($text_num)-1]);
+        for ($i = 0; $i < $text_num; $i++) {
+            $string = $string . '_';
+        }
+        return $string;
+    }
+
+    public function cleanString($string)
+    {
+        return rtrim($string, '_');
+    }
+
     public function decrypt($encrypted_text)
     {
-
         $idx_hex_iv = substr($encrypted_text,-2);
         $idx_hex_key = substr($encrypted_text,-4,2);
         $idx_iv = hexdec($idx_hex_iv);
@@ -66,14 +76,9 @@ class DynamicCrypto
         mcrypt_generic_init($encryptionDescriptor, $key, $iv);
         $decrypted = mdecrypt_generic($encryptionDescriptor,base64_decode($encrypted_text));
         mcrypt_generic_deinit($encryptionDescriptor);
-        /*$last_char=substr($decrypted,-1);
-        for($i=0;$i<$bit_check-1; $i++){
-            if(chr($i)==$last_char){
-                $decrypted=substr($decrypted,0,strlen($decrypted)-$i);
-                break;
-            }
-        }*/
-        $decrypted = rtrim($decrypted,'_');
+        mcrypt_module_close($encryptionDescriptor);
+
+        $decrypted = $this->cleanString($decrypted);
         return $decrypted;
     }
 } 
