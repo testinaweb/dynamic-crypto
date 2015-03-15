@@ -15,6 +15,11 @@ class DynamicCrypto
      */
     protected $IV;
 
+    /**
+     * @var
+     */
+    protected $encryptionDescriptor = null;
+
     protected $passphrase;
 
     /**
@@ -29,13 +34,22 @@ class DynamicCrypto
         $this->IV = new IV($this->passphrase);
     }
 
+    public function encryptInit()
+    {
+        mcrypt_generic_init($this->getEncryptionDescriptor(), $this->key->getSubString(), $this->IV->getSubString());
+    }
+
+    public function encryptDeinit()
+    {
+        mcrypt_generic_deinit($this->getEncryptionDescriptor());
+        mcrypt_module_close($this->getEncryptionDescriptor());
+    }
+
     public function encrypt($text)
     {
-        $encryptionDescriptor = $this->getEncryptionDescriptor();
-        mcrypt_generic_init($encryptionDescriptor, $this->key->getSubString(), $this->IV->getSubString());
-        $encrypted = mcrypt_generic($encryptionDescriptor, $this->prepareString($text));
-        mcrypt_generic_deinit($encryptionDescriptor);
-        mcrypt_module_close($encryptionDescriptor);
+        $this->encryptInit();
+        $encrypted = mcrypt_generic($this->getEncryptionDescriptor(), $this->prepareString($text));
+        $this->encryptDeinit();
 
         return rtrim(base64_encode($encrypted), '=')
             .$this->key->getRandomHexadecimalPosition()
@@ -44,7 +58,10 @@ class DynamicCrypto
 
     public function getEncryptionDescriptor()
     {
-        return mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+        if (is_null($this->encryptionDescriptor)) {
+            $this->encryptionDescriptor = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+        }
+        return $this->encryptionDescriptor;
     }
 
     public function prepareString($string)
@@ -71,12 +88,10 @@ class DynamicCrypto
         $iv = substr($this->passphrase->getSuperKey(),$idx_iv,8);
         $key =  substr($this->passphrase->getSuperKey(),$idx_key,24);
         $encrypted_text = substr($encrypted_text,0,-4);
-
-        $encryptionDescriptor = $this->getEncryptionDescriptor();
-        mcrypt_generic_init($encryptionDescriptor, $key, $iv);
-        $decrypted = mdecrypt_generic($encryptionDescriptor,base64_decode($encrypted_text));
-        mcrypt_generic_deinit($encryptionDescriptor);
-        mcrypt_module_close($encryptionDescriptor);
+        
+        mcrypt_generic_init($this->getEncryptionDescriptor(), $key, $iv);
+        $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(),base64_decode($encrypted_text));
+        $this->encryptDeinit();
 
         $decrypted = $this->cleanString($decrypted);
         return $decrypted;
