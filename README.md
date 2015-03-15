@@ -13,7 +13,7 @@ $dynamicEncrypt = new DynamicEncrypt($passphrase);
 $dynamicDecrypt = new DynamicDecrypt($passphrase);
 
 $encryptedString = $dynamicEncrypt->encrypt($input);
-$this->assertEquals($dynamicDecrypt->decrypt($encryptedString), $input);
+$decryptedString = $dynamicDecrypt->decrypt($encryptedString);
 ```
 
 Special thanks to Gabriele Giuranno.
