@@ -47,9 +47,11 @@ class DynamicCrypto
 
     public function encrypt($text)
     {
-        $this->encryptInit();
-        $encrypted = mcrypt_generic($this->getEncryptionDescriptor(), $this->prepareString($text));
-        $this->encryptDeinit();
+        $td = $this->getEncryptionDescriptor();
+        mcrypt_generic_init($td, $this->key->getSubString(), $this->IV->getSubString());
+        $encrypted = mcrypt_generic($td, $this->prepareString($text));
+        mcrypt_generic_deinit($td);
+        mcrypt_module_close($td);
 
         return rtrim(base64_encode($encrypted), '=')
             .$this->key->getRandomHexadecimalPosition()
@@ -61,6 +63,7 @@ class DynamicCrypto
         if (is_null($this->encryptionDescriptor)) {
             $this->encryptionDescriptor = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
         }
+        return mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
         return $this->encryptionDescriptor;
     }
 
@@ -89,9 +92,11 @@ class DynamicCrypto
         $key =  substr($this->passphrase->getSuperKey(),$idx_key,24);
         $encrypted_text = substr($encrypted_text,0,-4);
 
-        mcrypt_generic_init($this->getEncryptionDescriptor(), $key, $iv);
-        $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(), base64_decode($encrypted_text));
-        $this->encryptDeinit();
+        $td = $this->getEncryptionDescriptor();
+        mcrypt_generic_init($td, $key, $iv);
+        $decrypted = mdecrypt_generic($td, base64_decode($encrypted_text));
+        mcrypt_generic_deinit($td);
+        mcrypt_module_close($td);
 
         $decrypted = $this->cleanString($decrypted);
         return $decrypted;
