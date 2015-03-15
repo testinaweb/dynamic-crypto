@@ -88,9 +88,9 @@ class DynamicCrypto
         $iv = substr($this->passphrase->getSuperKey(),$idx_iv,8);
         $key =  substr($this->passphrase->getSuperKey(),$idx_key,24);
         $encrypted_text = substr($encrypted_text,0,-4);
-        
+
         mcrypt_generic_init($this->getEncryptionDescriptor(), $key, $iv);
-        $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(),base64_decode($encrypted_text));
+        $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(), base64_decode($encrypted_text));
         $this->encryptDeinit();
 
         $decrypted = $this->cleanString($decrypted);
