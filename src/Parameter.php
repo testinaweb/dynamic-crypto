@@ -30,6 +30,22 @@ abstract class Parameter
     }
 
     /**
+     * @param int $position
+     */
+    public function setDecimalPosition($position)
+    {
+        $this->randomPosition = $position;
+    }
+
+    /**
+     * @param string $hexadecimalPosition
+     */
+    public function setHexadecimalPosition($hexadecimalPosition)
+    {
+        $this->setDecimalPosition(hexdec($hexadecimalPosition));
+    }
+
+    /**
      * @return int
      */
     public function getRandomDecimalPosition()

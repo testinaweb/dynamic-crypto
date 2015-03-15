@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: manuel
- * Date: 14/03/15
- * Time: 20:52
- */
 
 use DynamicCrypto\Key;
 

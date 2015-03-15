@@ -1,6 +1,6 @@
 <?php
 
-use DynamicCrypto\DynamicCrypto;
+use DynamicCrypto\DynamicEncrypt;
 use DynamicCrypto\DynamicDecrypt;
 
 class DynamicCryptoTest extends PHPUnit_Framework_TestCase
@@ -10,10 +10,10 @@ class DynamicCryptoTest extends PHPUnit_Framework_TestCase
         $passphrase = 'ILoveDC';
         $input = "1928329323##pincopallino@gmail.com##pallcsd222asddasdf asdf asdf asf asfas fdasdasdasdino##24##it";// text to encrypt
 
-        $dynamicCrypto = new DynamicCrypto($passphrase);
-        $dinamicDecrypt = new DynamicDecrypt($passphrase);
+        $dynamicEncrypt = new DynamicEncrypt($passphrase);
+        $dynamicDecrypt = new DynamicDecrypt($passphrase);
 
-        $encryptedString= $dynamicCrypto->encrypt($input);
-        $this->assertEquals($dinamicDecrypt->decrypt($encryptedString), $input);
+        $encryptedString = $dynamicEncrypt->encrypt($input);
+        $this->assertEquals($dynamicDecrypt->decrypt($encryptedString), $input);
     }
 }
