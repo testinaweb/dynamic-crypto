@@ -1,16 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: manuel
- * Date: 15/03/15
- * Time: 16:48
- */
 
 namespace DynamicCrypto;
 
-
-class StringFormatter {
-
+class StringFormatter
+{
     /*
      * Constants
      */

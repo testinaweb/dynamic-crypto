@@ -7,9 +7,12 @@
             "role": "Developer"
         }
     ],
-    "version": "1.0.0-dev",
+    "version": "1.0.1-dev",
     "autoload": {
         "psr-4": {"DynamicCrypto\\": "src/"}
+    },
+    "require": {
+        "php": ">=5.4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.5.*@dev",

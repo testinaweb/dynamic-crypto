@@ -3,14 +3,13 @@
 A php project to encrypt and decrypt strings with dynamic keys
 
 ```php
-use DynamicCrypto\DynamicEncrypt;
-use DynamicCrypto\DynamicDecrypt;
+use DynamicCrypto\DynamicCryptoFactory;
 
-$passphrase = 'ILoveDC';
+$passPhrase = 'ILoveDC';
 $input = "1928329323##pincopallino@gmail.com##pallcsd222asddasdf asdf asdf asf asfas fdasdasdasdino##24##it";// text to encrypt
 
-$dynamicEncrypt = new DynamicEncrypt($passphrase);
-$dynamicDecrypt = new DynamicDecrypt($passphrase);
+$dynamicEncrypt = DynamicCryptoFactory::buildDynamicEncrypter($passPhrase);
+$dynamicDecrypt = DynamicCryptoFactory::buildDynamicDecrypter($passPhrase);
 
 $encryptedString = $dynamicEncrypt->encrypt($input);
 $decryptedString = $dynamicDecrypt->decrypt($encryptedString);

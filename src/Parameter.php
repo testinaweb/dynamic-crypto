@@ -3,7 +3,7 @@
 namespace DynamicCrypto;
 
 
-abstract class Parameter
+class Parameter
 {
 
     /**
@@ -19,14 +19,15 @@ abstract class Parameter
     /**
      * @var int
      */
-    protected $parameterLength = 0;
+    protected $parameterLength;
 
     /**
      * @param PassPhrase $passPhrase
      */
-    public function __construct(PassPhrase $passPhrase)
+    public function __construct(PassPhrase $passPhrase, $parameterLength)
     {
         $this->passPhrase = $passPhrase;
+        $this->parameterLength = $parameterLength;
     }
 
     /**

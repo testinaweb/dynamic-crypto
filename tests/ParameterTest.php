@@ -1,6 +1,6 @@
 <?php
 
-use DynamicCrypto\Key;
+use DynamicCrypto\Parameter;
 
 class KeyTest extends PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class KeyTest extends PHPUnit_Framework_TestCase
         $passPhrase->method('getSuperKeyLen')
             ->willReturn(26);
 
-        $this->key = new Key($passPhrase);
+        $this->key = new Parameter($passPhrase, 24);
     }
 
     public function testGetRandomDecimalPosition()
