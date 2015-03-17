@@ -4,7 +4,8 @@ Dynamic Crypto - Encrypter for PHP 5.4+
 [![Total Downloads](https://poser.pugx.org/testinaweb/dynamic-crypto/downloads.svg)](https://packagist.org/packages/testinaweb/dynamic-crypto)
 [![Latest Stable Version](https://poser.pugx.org/testinaweb/dynamic-crypto/v/stable.svg)](https://packagist.org/packages/testinaweb/dynamic-crypto)
 
-A php project to encrypt and decrypt strings with dynamic keys
+A php library to encrypt and decrypt strings with dynamic keys.
+This was be implemented to guarantee a quite high security level.
 
 Install
 -------
