@@ -35,7 +35,7 @@ Usage
 use DynamicCrypto\DynamicCryptoFactory;
 
 $passPhrase = 'ILoveDC';
-$input = "1928329323##pincopallino@gmail.com##pallcsd222asddasdf asdf asdf asf asfas fdasdasdasdino";
+$input = '{"fullName":"Manuel Kanah","user":"testinaweb","email":"testinaweb@testinaweb.com"}';
 
 $dynamicEncrypt = DynamicCryptoFactory::buildDynamicEncrypter($passPhrase);
 $dynamicDecrypt = DynamicCryptoFactory::buildDynamicDecrypter($passPhrase);
