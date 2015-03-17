@@ -5,8 +5,8 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use DynamicCrypto\DynamicEncrypt;
-use DynamicCrypto\DynamicDecrypt;
+use DynamicCrypto\DynamicCryptoFactory;
+
 /**
  * Defines application features from the specific context.
  */
@@ -43,8 +43,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iWantAnEncryptedStringBack()
     {
-        $dynamicEncrypt = new DynamicEncrypt($this->passPhrase);
-        $this->encryptedString = $dynamicEncrypt->encrypt($this->string);
+        $dynamicEncrypter = DynamicCryptoFactory::buildDynamicEncrypter($this->passPhrase);
+        $this->encryptedString = $dynamicEncrypter->encrypt($this->string);
         PHPUnit_Framework_TestCase::assertNotEquals(
             $this->encryptedString,
             $this->string
@@ -57,8 +57,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iWantMyOriginalStringAgain()
     {
-        $dynamicDecrypt = new DynamicDecrypt($this->passPhrase);
-        $decryptedString = $dynamicDecrypt->decrypt($this->encryptedString);
+        $dynamicDecrypter = DynamicCryptoFactory::buildDynamicDecrypter($this->passPhrase);
+        $decryptedString = $dynamicDecrypter->decrypt($this->encryptedString);
         PHPUnit_Framework_TestCase::assertEquals(
             $decryptedString,
             $this->string
