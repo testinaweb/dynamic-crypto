@@ -11,13 +11,29 @@ class StringFormatterTest extends PHPUnit_Framework_TestCase
         $this->stringFormatter = new StringFormatter();
     }
 
-    public function testPrepareString()
+    /**
+     * @dataProvider provider
+     */
+    public function testPrepareString($input, $aspected)
     {
-        $this->assertEquals('abcd____', $this->stringFormatter->prepareString('abcd'));
+        $this->assertEquals($aspected, $this->stringFormatter->prepareString($input));
     }
 
-    public function testCleanString()
+    /**
+     * @dataProvider provider
+     */
+    public function testCleanString($aspected, $input)
     {
-        $this->assertEquals('abcb', $this->stringFormatter->cleanString('abcb____'));
+        $this->assertEquals($aspected, $this->stringFormatter->cleanString($input));
+    }
+
+    public function provider()
+    {
+        return array(
+            array('abcd', 'abcd____'),
+            array('abcdefgh', 'abcdefgh'),
+            array('abcdefghi', 'abcdefghi_______'),
+            array('abcdefghijlkmno', 'abcdefghijlkmno_'),
+        );
     }
 }

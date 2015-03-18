@@ -4,6 +4,10 @@ namespace DynamicCrypto;
 
 class DynamicCryptoFactory {
 
+    /**
+     * @param string $passPhrase
+     * @return DynamicEncrypter
+     */
     public static function buildDynamicEncrypter ($passPhrase)
     {
         $passPhraseInstance = new PassPhrase($passPhrase);
@@ -15,6 +19,10 @@ class DynamicCryptoFactory {
         return new DynamicEncrypter($key, $IV, $stringFormatter);
     }
 
+    /**
+     * @param string $passPhrase
+     * @return DynamicDecrypter
+     */
     public static function buildDynamicDecrypter ($passPhrase)
     {
         $passPhraseInstance = new PassPhrase($passPhrase);
