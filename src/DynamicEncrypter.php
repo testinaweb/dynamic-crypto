@@ -39,13 +39,23 @@ class DynamicEncrypter
      */
     public function encrypt($text)
     {
-        $this->encryptInit();
-        $encrypted = mcrypt_generic($this->getEncryptionDescriptor(), $this->stringFormatter->prepareString($text));
-        $this->encryptDeinit();
+        $encrypted = $this->mcrypt($this->stringFormatter->prepareString($text));
 
         return rtrim(base64_encode($encrypted), '=')
         .$this->key->getRandomHexadecimalPosition()
         .$this->IV->getRandomHexadecimalPosition();
     }
 
+    /**
+     * @param string $string
+     * @return string
+     */
+    private function mcrypt($string)
+    {
+        $this->encryptInit();
+        $encrypted = mcrypt_generic($this->getEncryptionDescriptor(), $string);
+        $this->encryptDeinit();
+
+        return $encrypted;
+    }
 }

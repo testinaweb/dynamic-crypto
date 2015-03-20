@@ -42,13 +42,23 @@ class DynamicDecrypter
         $this->IV->setHexadecimalPosition(substr($encrypted_text,-2));
         $this->key->setHexadecimalPosition(substr($encrypted_text,-4,2));
 
-        $encrypted_text = substr($encrypted_text,0,-4);
-
-        $this->encryptInit();
-        $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(), base64_decode($encrypted_text));
-        $this->encryptDeinit();
+        $encrypted_text = base64_decode(substr($encrypted_text,0,-4));
+        $decrypted = $this->mdecrypt($encrypted_text);
 
         $decrypted = $this->stringFormatter->cleanString($decrypted);
+        return $decrypted;
+    }
+
+    /**
+     * @param string $encrypted
+     * @return string
+     */
+    private function mdecrypt($encrypted)
+    {
+        $this->encryptInit();
+        $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(), $encrypted);
+        $this->encryptDeinit();
+
         return $decrypted;
     }
 

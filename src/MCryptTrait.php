@@ -6,12 +6,12 @@ Trait MCryptTrait {
     /**
      * @var
      */
-    protected $encryptionDescriptor = null;
+    private $encryptionDescriptor = null;
 
     /**
      * Initialization of mcrypt
      */
-    public function encryptInit()
+    private function encryptInit()
     {
         mcrypt_generic_init($this->getEncryptionDescriptor(), $this->key->getSubString(), $this->IV->getSubString());
     }
@@ -19,7 +19,7 @@ Trait MCryptTrait {
     /**
      * Close mcrypt
      */
-    public function encryptDeinit()
+    private function encryptDeinit()
     {
         mcrypt_generic_deinit($this->getEncryptionDescriptor());
         mcrypt_module_close($this->getEncryptionDescriptor());
@@ -30,7 +30,7 @@ Trait MCryptTrait {
      *
      * @return resource
      */
-    public function getEncryptionDescriptor()
+    private function getEncryptionDescriptor()
     {
         if (is_null($this->encryptionDescriptor)) {
             $this->encryptionDescriptor = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
