@@ -1,4 +1,10 @@
 {
+    "name": "testinaweb/dynamic-crypto",
+    "type": "library",
+    "description": "A php library to encrypt and decrypt strings with dynamic keys",
+    "keywords": ["encrypt", "encrypter", "decrypt", "decrypter", "mcrypt"],
+    "homepage": "https://github.com/testinaweb/dynamic-crypto",
+    "license": "MIT",
     "authors": [
         {
             "name": "Manuel Kanah",
@@ -7,12 +13,6 @@
             "role": "Developer"
         }
     ],
-    "name": "testinaweb/dynamic-crypto",
-    "description": "A php library to encrypt and decrypt strings with dynamic keys",
-    "keywords": ["encrypt", "encrypter", "decrypt", "decrypter", "mcrypt"],
-    "homepage": "https://github.com/testinaweb/dynamic-crypto",
-    "type": "library",
-    "version": "1.0.2",
     "require": {
         "php": ">=5.4.0"
     },
@@ -23,5 +23,11 @@
     "autoload": {
         "psr-4": {"DynamicCrypto\\": "src/"}
     },
-    "license": "MIT"
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
