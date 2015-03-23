@@ -41,16 +41,20 @@ class DynamicEncrypter
     {
         $encrypted = $this->mcrypt($this->stringFormatter->prepareString($text));
 
-        return rtrim(base64_encode($encrypted), '=')
+        $result = rtrim(base64_encode($encrypted), '=')
         .$this->key->getRandomHexadecimalPosition()
         .$this->IV->getRandomHexadecimalPosition();
+
+        $this->resetCurrentProcess();
+
+        return $result;
     }
 
     /**
      * @param string $string
      * @return string
      */
-    private function mcrypt($string)
+    protected function mcrypt($string)
     {
         $this->encryptInit();
         $encrypted = mcrypt_generic($this->getEncryptionDescriptor(), $string);

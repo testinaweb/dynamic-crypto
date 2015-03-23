@@ -72,4 +72,12 @@ class Parameter
         return substr($this->passPhrase->getSuperKey(), $this->getRandomDecimalPosition(), $this->parameterLength);
     }
 
+    /**
+     * reset the random position
+     */
+    public function reset()
+    {
+        $this->randomPosition = null;
+    }
+
 } 

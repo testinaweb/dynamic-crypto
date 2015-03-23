@@ -45,15 +45,16 @@ class DynamicDecrypter
         $encrypted_text = base64_decode(substr($encrypted_text,0,-4));
         $decrypted = $this->mdecrypt($encrypted_text);
 
-        $decrypted = $this->stringFormatter->cleanString($decrypted);
-        return $decrypted;
+        $this->resetCurrentProcess();
+
+        return $this->stringFormatter->cleanString($decrypted);
     }
 
     /**
      * @param string $encrypted
      * @return string
      */
-    private function mdecrypt($encrypted)
+    protected function mdecrypt($encrypted)
     {
         $this->encryptInit();
         $decrypted = mdecrypt_generic($this->getEncryptionDescriptor(), $encrypted);

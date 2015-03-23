@@ -37,4 +37,30 @@ Trait MCryptTrait {
         }
         return $this->encryptionDescriptor;
     }
+
+    /**
+     * Reset the encryption descriptor to start a new encryption
+     */
+    private function resetEncryptionDescriptor()
+    {
+        $this->encryptionDescriptor = null;
+    }
+
+    /**
+     * Reset parameters to make the parameter create a new key
+     */
+    private function resetParameters()
+    {
+        $this->key->reset();
+        $this->IV->reset();
+    }
+
+    /**
+     * Wrapper to reset mcrypt and parameters
+     */
+    private function resetCurrentProcess()
+    {
+        $this->resetEncryptionDescriptor();
+        $this->resetParameters();
+    }
 } 
